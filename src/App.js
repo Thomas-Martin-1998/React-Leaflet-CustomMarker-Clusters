@@ -4,10 +4,6 @@ import { useParams } from 'react-router-dom';
 import { Route, Routes } from "react-router-dom";
 
 function App() {
-
-  const { actionId } = useParams();
-
-
   return (
     <div className="App">
       <Routes>
