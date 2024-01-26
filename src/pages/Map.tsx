@@ -9,7 +9,6 @@ import {
   Marker,
 } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import Spinner from "react-bootstrap/Spinner";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useState } from "react";
 
@@ -57,79 +56,64 @@ var fieldMarker = L.ExtraMarkers.icon({
   prefix: "fa",
 });
 
-var testMarker = L.ExtraMarkers.icon({
-  icon: "fa-coffee",
-  markerColor: "red",
-  shape: "square",
-  prefix: "fa",
-});
-
 type markerItem = {
   coords: number[];
   type: string;
 };
 
 function markerType(marker: markerItem) {
-  if (marker.type == "New Product") return productMarker;
-  if (marker.type == "New Batch") return batchMarker;
-  if (marker.type == "New Transaction") return shipmentMarker;
-  if (marker.type == "Field") return fieldMarker;
+  if (marker.type === "New Product") return productMarker;
+  if (marker.type === "New Batch") return batchMarker;
+  if (marker.type === "New Transaction") return shipmentMarker;
+  if (marker.type === "Field") return fieldMarker;
   return DefaultIcon;
 }
 
 function Map() {
-  const [spinnerState, setSpinner] = useState(false);
-  const [markers, setMarkers] = useState<markerItem[]>([
+  const [markers] = useState<markerItem[]>([
     { coords: [54.249, -5.91], type: "Field" },
     { coords: [54.242, -5.884], type: "New Product" },
     { coords: [54.242, -5.884], type: "New Batch" },
     { coords: [54.2965, -5.83624], type: "New Transaction" },
     { coords: [54.2965, -5.83624], type: "New Batch" },
-    { coords: [54.588277030996665, -5.895309948184754], type: "New Transaction" },
+    {
+      coords: [54.588277030996665, -5.895309948184754],
+      type: "New Transaction",
+    },
     { coords: [54.588277030996665, -5.895309948184754], type: "New Batch" },
-
   ]);
-  const [polyline, setPolyline] = useState<[L.LatLngTuple[]]>([[]]);
+  const [polyline] = useState<[L.LatLngTuple[]]>([[]]);
 
-  markers.forEach(marker => {
+  markers.forEach((marker) => {
     //Multi polyline
-    polyline[0].push([marker.coords[0], marker.coords[1]])
+    polyline[0].push([marker.coords[0], marker.coords[1]]);
   });
 
   return (
     <div>
-      {spinnerState && (
-        <div className="center">
-          <p className="loading">Loading</p>
-          <Spinner animation="grow" />
-        </div>
-      )}
+      <MapContainer
+        center={[markers[0].coords[0], markers[0].coords[1]]}
+        zoom={12}
+        maxZoom={16}
+        scrollWheelZoom={true}
+      >
+        <MarkerClusterGroup chunkedLoading>
+          {markers.map((marker) => (
+            <Marker
+              position={[marker.coords[0], marker.coords[1]]}
+              icon={markerType(marker)}
+            >
+              <Popup>{marker.type}</Popup>
+            </Marker>
+          ))}
+        </MarkerClusterGroup>
 
-      {!spinnerState && (
-        <MapContainer
-          center={[markers[0].coords[0], markers[0].coords[1]]}
-          zoom={12}
-          maxZoom={16}
-          scrollWheelZoom={true}
-        >
-          <MarkerClusterGroup chunkedLoading>
-            {markers.map((marker) => (
-              <Marker
-                position={[marker.coords[0], marker.coords[1]]}
-                icon={markerType(marker)}
-              >
-                <Popup>{marker.type}</Popup>
-              </Marker>
-            ))}
-          </MarkerClusterGroup>
-
-          <TileLayer
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          />
-          <Polyline pathOptions={{ color: "green" }} positions={polyline} />
-        </MapContainer>
-      )}
+        <TileLayer
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        />
+        <Polyline pathOptions={{ color: "green" }} positions={polyline} />
+      </MapContainer>
     </div>
   );
 }
