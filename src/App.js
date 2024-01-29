@@ -1,6 +1,5 @@
-import Map from './pages/Map';
+import Map from './Map';
 import './App.css';
-import { useParams } from 'react-router-dom';
 import { Route, Routes } from "react-router-dom";
 
 function App() {
