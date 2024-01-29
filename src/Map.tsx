@@ -1,4 +1,4 @@
-import ".././App.css";
+import "./App.css";
 import * as React from "react";
 import * as L from "leaflet";
 import {
@@ -22,8 +22,8 @@ import "@fortawesome/fontawesome-free/css/all.css";
 import MarkerClusterGroup from "react-leaflet-cluster";
 
 let DefaultIcon = L.icon({
-  iconUrl: require("../assets/marker-icon.png"),
-  shadowUrl: require("../assets/marker-shadow.png"),
+  iconUrl: require("./assets/marker-icon.png"),
+  shadowUrl: require("./assets/marker-shadow.png"),
   iconSize: [25, 41],
   iconAnchor: [12, 41],
 });
